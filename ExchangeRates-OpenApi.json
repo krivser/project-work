@@ -1,0 +1,172 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ExchangeRates API",
+    "version": "1.0.0",
+    "description": "Адаптер для получения курсов валют из ЦБ"
+  },
+  "paths": {
+    "/getExchangeRatesOnDate": {
+      "post": {
+        "operationId": "getExchangeRatesOnDate",
+        "responses": {
+          "200": {
+            "description": "The operation was successful.",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/getExchangeRatesOnDateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Method Not Found",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/faultResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Получить курсы валют на определенную дату",
+        "requestBody": {
+          "content": {
+            "application/json; charset=utf-8": {
+              "schema": {
+                "$ref": "#/components/schemas/getExchangeRatesOnDateRequest"
+              }
+            }
+          },
+          "description": "The request body for the operation",
+          "required": true
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://10.36.22.62:7831/services/CommonService/rest/"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "getExchangeRatesOnDateRequest": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата, на которую нужно получить курсы валют"
+          }
+        },
+        "required": [
+          "date"
+        ]
+      },
+      "getExchangeRatesOnDateResponse": {
+        "type": "object",
+        "properties": {
+          "getExchangeRatesOnDateResponse": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "ISO код валюты"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Название валюты"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "description": "Номинал"
+                    },
+                    "rate": {
+                      "type": "string",
+                      "description": "Курс валюты"
+                    },
+                  },
+                  "required": [
+                    "code",
+                    "name",
+                    "unit",
+                    "rate"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "items"
+            ]
+          }
+        },
+        "required": [
+          "getExchangeRatesOnDateResponse"
+        ]
+      },
+      "faultResponse": {
+        "type": "object",
+        "properties": {
+          "msgID": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Уникальный идентификатор запроса"
+          },
+          "fault": {
+            "type": "object",
+            "properties": {
+              "errorCode": {
+                "type": "integer",
+                "format": "int32",
+                "description": "Код ошибки"
+              },
+              "errorText": {
+                "type": "string",
+                "description": "Текст ошибки"
+              },
+              "exception": {
+                "type": "string",
+                "description": "Подробная информация об ошибке (при наличии)"
+              }
+            },
+            "required": [
+              "errorCode",
+              "errorText"
+            ]
+          }
+        },
+        "required": [
+          "msgID"
+        ]
+      }
+    }
+  }
+}
